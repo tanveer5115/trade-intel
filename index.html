@@ -148,6 +148,7 @@ select{width:100%;background:var(--panel);color:var(--txt);border:1px solid var(
 .rk .tag{font-size:.54rem;text-transform:uppercase;letter-spacing:.5px;color:#06231f;
   background:var(--accent);padding:2px 6px;border-radius:5px;font-weight:700;margin-left:6px}
 .rk .val{font-family:'Space Grotesk';font-size:1rem;font-weight:700}
+.rk .sub2{font-size:.58rem;color:var(--dim);margin-top:2px;font-weight:500}
 
 /* TAT TABLE */
 .tat{margin-top:12px;background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden}
@@ -256,9 +257,9 @@ select{width:100%;background:var(--panel);color:var(--txt);border:1px solid var(
 </div>
 
 <script>
-const SHEET_ID='17UPu-0GurBgKbPzDUWOifdCpiSNO3HWmfbNE1abx_ws';
-// Live CSV GIDs — fill PEER/TAT once published. Import/Export/BG known.
-const GID={import:'1153975890',export:'142517649',bg:'659700032',peer:'',tat:''};
+const SHEET_ID='1F_ByyGAnatFJnTDewwadOYE6DXGdr6ydNqgIqTQYI4Q';
+// Live CSV GIDs
+const GID={import:'120182385',export:'551905667',bg:'514711186',peer:'220392257',tat:'2001677146',employee:'731244128'};
 
 let DB={"import":[[2024,"JANUARY",23,1976,65.93,658,80.36,684,13.28,686,6.09,4004,165.66],[2024,"FEBRUARY",21,1473,45.15,518,65.72,452,11.18,508,6.52,2951,128.57],[2024,"MARCH",19,1947,70.85,688,89.91,645,16,636,5.58,3916,182.34],[2024,"APRIL",20,1479,50.24,688,98.27,553,15.51,631,3.94,3351,167.96],[2024,"MAY",20,1854,54.18,717,106.99,698,16.83,627,7.08,3896,185.08],[2024,"JUNE",17,1404,50.13,608,71.74,469,8.35,508,4.28,2989,134.5],[2024,"JULY",21,1602,60.6,528,82.92,514,15.56,511,3.23,3155,162.31],[2024,"AUGUST",19,1807,58.24,536,96.38,626,18.03,577,3.62,3546,176.27],[2024,"SEPTEMBER",21,1853,67.65,613,118.85,689,17,806,7.12,3961,210.62],[2024,"OCTOBER",22,1851,59,743,99.8,776,15.63,651,7.17,4021,181.6],[2024,"NOVEMBER",20,1874,62.19,651,99.65,653,12.44,530,4.55,3708,178.83],[2024,"DECEMBER",20,1875,75.98,866,131.22,696,15.9,672,51.87,4109,274.97],[2025,"JANUARY",22,2042,62.11,759,121.85,664,14.29,700,11.4,4165,209.65],[2025,"FEBRUARY",20,1700,51.17,784,153.44,527,13.27,512,4.15,3523,222.03],[2025,"MARCH",19,1999,65.97,790,142.37,696,20.14,653,10.05,4138,238.53],[2025,"APRIL",19,1464,49.87,732,113.87,615,13,653,7.69,3464,184.43],[2025,"MAY",19,1965,61.47,750,134.03,633,14,780,9.53,4128,219.03],[2025,"JUNE",18,1347,49.01,581,88.22,480,9.75,557,28.06,2965,175.04],[2025,"JULY",20,2224,69,795,113,621,12,959,29.71,4599,223.71],[2025,"AUGUST",21,1826,52.91,619,99.78,624,13.75,921,52.07,3990,218.51],[2025,"SEPTEMBER",22,1904,59,710,135,778,19.13,1044,17.73,4436,230.86],[2025,"OCTOBER",20,1688,56,766,136,662,11.73,926,50.24,4042,253.97],[2025,"NOVEMBER",21,1770,43.24,903,216,694,14.2,797,15.44,4164,288.88],[2025,"DECEMBER",20,1737,56.45,781,103.5,672,12.6,436,43.67,3626,216.22],[2026,"JANUARY",21,2125,77.17,848,140.3,626,16.84,1007,12.76,4606,247.07],[2026,"FEBRUARY",19,1667,60,721,139.65,530,13,667,10.24,3585,222.89],[2026,"MARCH",18,1816,53,813,154,638,36,861,17,4128,260],[2026,"APRIL",21,2158,74,869,144,784,66,1185,70.4,4996,354.4],[2026,"MAY",19,1819,58,831,182,615,15,919,151,4184,406]],"export":[[2024,"JANUARY",23,2079,121.48,1241,44.37,3320,165.85],[2024,"FEBRUARY",21,1863,104.32,1016,36.3,2879,140.62],[2024,"MARCH",19,1988,120.71,1172,43.17,3160,163.88],[2024,"APRIL",20,1706,100.01,923,36.38,2629,136.39],[2024,"MAY",20,2083,126,1274,48,3357,174],[2024,"JUNE",17,1805,121,1009,42.14,2814,163.14],[2024,"JULY",21,1675,116,1074,38,2749,154],[2024,"AUGUST",19,1703,101.4,1237,47,2940,148.4],[2024,"SEPTEMBER",21,2296,139.51,1498,51.81,3794,191.32],[2024,"OCTOBER",22,2269,123.59,1355,50.28,3624,173.87],[2024,"NOVEMBER",20,2035,130,1298,49.46,3333,179.46],[2024,"DECEMBER",20,2164,126.83,1306,49,3470,175.83],[2025,"JANUARY",22,2034,128.59,1484,54.8,3518,183.39],[2025,"FEBRUARY",20,2106,126.58,1131,43.87,3237,170.45],[2025,"MARCH",19,2106,150.27,1287,45.81,3393,196.08],[2025,"APRIL",19,1962,126.55,904,33.94,2866,160.49],[2025,"MAY",19,1961,126.9,1381,47.79,3342,174.69],[2025,"JUNE",18,1840,120,992,36.78,2832,156.78],[2025,"JULY",20,1951,126.85,1193,47.61,3144,174.46],[2025,"AUGUST",21,2213,139.36,1075,40.01,3288,179.37],[2025,"SEPTEMBER",22,2223,129.6,1148,38.76,3371,168.36],[2025,"OCTOBER",20,1893,117.5,1179,48.37,3072,165.87],[2025,"NOVEMBER",21,1951,134.06,1134,42,3085,176.06],[2025,"DECEMBER",20,2139,132.37,1255,42.55,3394,174.92],[2026,"JANUARY",21,1996,125.13,1160,41,3156,166.13],[2026,"FEBRUARY",19,1748,109.71,1132,39.11,2880,148.82],[2026,"MARCH",18,1661,106,1219,49,2880,155],[2026,"APRIL",21,1987,120,1366,53,3353,173],[2026,"MAY",19,1758,132,1168,42,2926,174]],"bg":[[2024,"JANUARY",23,105,3.56],[2024,"FEBRUARY",21,78,4.48],[2024,"MARCH",19,83,15.2],[2024,"APRIL",20,104,4.69],[2024,"MAY",20,98,4.4],[2024,"JUNE",17,99,25.22],[2024,"JULY",21,94,5.54],[2024,"AUGUST",19,66,9.4],[2024,"SEPTEMBER",21,66,6.72],[2024,"OCTOBER",22,80,7.17],[2024,"NOVEMBER",20,86,45.22],[2024,"DECEMBER",20,115,26.15],[2025,"JANUARY",22,112,9.81],[2025,"FEBRUARY",20,132,8.6],[2025,"MARCH",19,102,8.43],[2025,"APRIL",19,83,21.29],[2025,"MAY",19,113,5.31],[2025,"JUNE",18,144,63.22],[2025,"JULY",20,120,22.42],[2025,"AUGUST",21,120,11],[2025,"SEPTEMBER",22,103,40.79],[2025,"OCTOBER",20,57,2.64],[2025,"NOVEMBER",21,69,124],[2025,"DECEMBER",20,66,6.67],[2026,"JANUARY",21,99,4.45],[2026,"FEBRUARY",19,136,12.63],[2026,"MARCH",18,110,53],[2026,"APRIL",21,163,103],[2026,"MAY",19,159,32]],"total":[[2024,"JANUARY",23,4004,165.66,3320,165.85,105,3.56,7429,335.07],[2024,"FEBRUARY",21,2951,128.57,2879,140.62,78,4.48,5908,273.67],[2024,"MARCH",19,3916,182.34,3160,163.88,83,15.2,7159,361.42],[2024,"APRIL",20,3351,167.96,2629,136.39,104,4.69,6084,309.04],[2024,"MAY",20,3896,185.08,3357,174,98,4.4,7351,363.48],[2024,"JUNE",17,2989,134.5,2814,163.14,99,25.22,5902,322.86],[2024,"JULY",21,3155,162.31,2749,154,94,5.54,5998,321.85],[2024,"AUGUST",19,3546,176.27,2940,148.4,66,9.4,6552,334.07],[2024,"SEPTEMBER",21,3961,210.62,3794,191.32,66,6.72,7821,408.66],[2024,"OCTOBER",22,4021,181.6,3624,173.87,80,7.17,7725,362.64],[2024,"NOVEMBER",20,3708,178.83,3333,179.46,86,45.22,7127,403.51],[2024,"DECEMBER",20,4109,274.97,3470,175.83,115,26.15,7694,476.95],[2025,"JANUARY",22,4165,209.65,3518,183.39,112,9.81,7795,402.85],[2025,"FEBRUARY",20,3523,222.03,3237,170.45,132,8.6,6892,401.08],[2025,"MARCH",19,4138,238.53,3393,196.08,102,8.43,7633,443.04],[2025,"APRIL",19,3464,184.43,2866,160.49,83,21.29,6413,366.21],[2025,"MAY",19,4128,219.03,3342,174.69,113,5.31,7583,399.03],[2025,"JUNE",18,2965,175.04,2832,156.78,144,63.22,5941,395.04],[2025,"JULY",20,4599,223.71,3144,174.46,120,22.42,7863,420.59],[2025,"AUGUST",21,3990,218.51,3288,179.37,120,11,7398,408.88],[2025,"SEPTEMBER",22,4436,230.86,3371,168.36,103,40.79,7910,440.01],[2025,"OCTOBER",20,4042,253.97,3072,165.87,57,2.64,7171,422.48],[2025,"NOVEMBER",21,4164,288.88,3085,176.06,69,124,7318,588.94],[2025,"DECEMBER",20,3626,216.22,3394,174.92,66,6.67,7086,397.81],[2026,"JANUARY",21,4606,247.07,3156,166.13,99,4.45,7861,417.65],[2026,"FEBRUARY",19,3585,222.89,2880,148.82,136,12.63,6601,384.34],[2026,"MARCH",18,4128,260,2880,155,110,53,7118,468],[2026,"APRIL",21,4996,354.4,3353,173,163,103,8512,630.4],[2026,"MAY",19,4184,406,2926,174,159,32,7269,612]],"peer":{"months":["JAN-26","FEB-26","MAR-26","APR-26"],"rows":[["Prime Bank","Import",247,223,260,354],["Prime Bank","Export",166,149,155,173],["The Premier Bank","Import",235.35,166.57,180.15,245.6],["The Premier Bank","Export",181.06,144.61,166.43,158.7],["Dhaka Bank","Import",200.15,152.26,166.02,293.44],["Dhaka Bank","Export",169.07,134.9,153.19,164.05],["EBL","Import",465,242,308,415],["EBL","Export",282,270,260,274],["The City","Import",485.56,375.62,386.15,528.7],["The City","Export",310.26,269.68,315.93,318.97],["UCB","Import",326.7,212.19,281,291.26],["UCB","Export",270.68,229.36,235.74,255.55],["Shahjalal Islami","Import",393,271,339,414],["Shahjalal Islami","Export",260,239,260,305]]},"tat":{"cols":["Product","Prime Conventional","Prime Digital","SCB","The City","BRAC","EBL","UCB","Shahjalal","Dhaka"],"rows":[["LC Issuance (BTB)",34,5,40,35,30,40,48,58,44],["LC Issuance (Cash)",65,10,70,65,60,76,91,112,83],["TT/CAD",30,null,35,30,30,35,42,52,38],["Shipping Guarantee",30,10,30,30,30,35,42,52,38],["Export Bill Processing",20,null,35,25,30,23,28,34,26],["Trade Loans",15,null,25,15,20,18,21,26,19]]},"employee":[["The City",190],["Prime Bank",121],["EBL",197],["Dhaka Bank",140],["UCB",221],["Shahjalal Islami",300]]};
 
@@ -391,16 +392,25 @@ function renderPeer(){
     Total:banks[b].Import+banks[b].Export}));
   arr.sort((x,y)=>y[peerType]-x[peerType]);
   const max=Math.max(...arr.map(a=>a[peerType]),1);
+  // employee lookup
+  const emp={};(DB.employee||[]).forEach(e=>emp[e[0]]=Number(e[1])||0);
+  const nMo=cols.length;  // months in period, for per-staff monthly avg
   // period span label
   const span=peerPeriod==='single'?labels[mi]:`${labels[cols[0]]} → ${labels[mi]} (${cols.length} mo)`;
   document.getElementById('peerSpan').textContent=`${peerType} · ${span} · USD Mn`;
   document.getElementById('peerMonLab').textContent=peerPeriod==='single'?'Month':'Through Month';
   document.getElementById('peerOut').innerHTML=arr.map((a,i)=>{
     const me=a.b==='Prime Bank';
+    const staff=emp[a.b];
+    const perStaff=staff?(a[peerType]/staff):null;  // USD Mn per employee (period)
+    const staffTxt=staff?`${staff} staff`:'staff n/a';
+    const perTxt=perStaff!=null?`${fmt(perStaff,2)} Mn/staff`:'';
     return `<div class="rk ${me?'me':''}"><div class="fill" style="width:${a[peerType]/max*100}%"></div>
       <div class="ct"><div class="l"><span class="pos">${i+1}</span>
-      <span class="nm">${a.b}${me?'<span class="tag">US</span>':''}</span></div>
-      <span class="val">${fmt(a[peerType])}</span></div></div>`;}).join('');
+      <div><div class="nm">${a.b}${me?'<span class="tag">US</span>':''}</div>
+      <div class="sub2">${staffTxt}</div></div></div>
+      <div style="text-align:right"><div class="val">${fmt(a[peerType])}</div>
+      <div class="sub2">${perTxt}</div></div></div></div>`;}).join('');
 }
 
 /* ---------- TAT ---------- */
@@ -448,16 +458,30 @@ function parseCSV(t){return t.trim().split('\n').map(l=>{const o=[];let c='',q=f
   return o.map(x=>x.trim());});}
 function num(x){const n=parseFloat(String(x).replace(/,/g,''));return isNaN(n)?x:n;}
 
+// Total auto-derives from Import + Export + BG (no Total tab needed)
+function deriveTotal(){
+  const key=r=>r[0]+'|'+r[1];
+  const ex={},bg={};
+  DB.export.forEach(r=>ex[key(r)]=r);
+  DB.bg.forEach(r=>bg[key(r)]=r);
+  DB.total=DB.import.map(r=>{
+    const e=ex[key(r)]||[],b=bg[key(r)]||[];
+    const it=+r[11]||0,iv=+r[12]||0,et=+e[7]||0,ev=+e[8]||0,bc=+b[3]||0,bv=+b[4]||0;
+    return [r[0],r[1],r[2],it,iv,et,ev,bc,bv,it+et+bc,iv+ev+bv];
+  });
+}
+
 async function goLive(){
   const dot=document.getElementById('dot'),txt=document.getElementById('syncTxt');
   dot.className='dot loading';txt.textContent='Syncing…';
   try{
-    const jobs=[['import',13],['export',9],['bg',5],['total',11]];
+    const jobs=[['import',13],['export',9],['bg',5]];
     for(const[key,nc]of jobs){if(!GID[key])continue;
       const r=await fetch(csvUrl(GID[key]));const rows=parseCSV(await r.text());
       const data=rows.slice(2).filter(x=>/^\d{4}$/.test(x[0]))
         .map(x=>x.slice(0,nc).map((v,i)=>i==1?v.toUpperCase():num(v)));
       if(data.length)DB[key]=data;}
+    deriveTotal();
     if(GID.peer){const r=await fetch(csvUrl(GID.peer));const rows=parseCSV(await r.text());
       const months=rows[1].slice(2).filter(Boolean);
       const body=rows.slice(2).filter(x=>x[0]).map(x=>[x[0],x[1],...x.slice(2,2+months.length).map(num)]);
@@ -465,6 +489,9 @@ async function goLive(){
     if(GID.tat){const r=await fetch(csvUrl(GID.tat));const rows=parseCSV(await r.text());
       const cols=rows[1];const body=rows.slice(2).filter(x=>x[0]).map(x=>[x[0],...x.slice(1,10).map(num)]);
       if(body.length)DB.tat={cols,rows:body};}
+    if(GID.employee){const r=await fetch(csvUrl(GID.employee));const rows=parseCSV(await r.text());
+      const body=rows.slice(2).filter(x=>x[0]).map(x=>[x[0],num(x[1])]);
+      if(body.length)DB.employee=body;}
     dot.className='dot live';txt.textContent='Live';
     buildControls();buildPeer();renderTat();
   }catch(e){dot.className='dot';txt.textContent='Built-in';}
