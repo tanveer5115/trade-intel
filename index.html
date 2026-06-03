@@ -217,11 +217,16 @@ select{width:100%;background:var(--panel);color:var(--txt);border:1px solid var(
     <button data-pt="Import">Import</button>
     <button data-pt="Export">Export</button>
   </div>
-  <div class="eyebrow">Month</div>
+  <div class="eyebrow">Period</div>
+  <div class="pills" id="peerPeriod">
+    <div class="pill on" data-pp="single">Single Month</div>
+    <div class="pill" data-pp="ytd">Year to Date</div>
+  </div>
+  <div class="eyebrow" id="peerMonLab">Month</div>
   <div class="row">
     <div class="fld"><select id="peerMonth"></select></div>
   </div>
-  <div class="eyebrow">League Table <span style="color:var(--dim);font-weight:500;text-transform:none;letter-spacing:0">USD Mn</span></div>
+  <div class="eyebrow">League Table <span style="color:var(--dim);font-weight:500;text-transform:none;letter-spacing:0" id="peerSpan">USD Mn</span></div>
   <div class="rank" id="peerOut"></div>
   <div class="note">BG not included — peer BG data unavailable. Total = Import + Export.</div>
   <div class="spacer"></div>
@@ -275,13 +280,21 @@ let segCur='total', modeCur='month';
 function years(src){return [...new Set(DB[src].map(r=>r[0]))].sort();}
 function rowsByYear(src,y){return DB[src].filter(r=>r[0]==y);}
 function findRow(src,y,m){return DB[src].find(r=>r[0]==y&&r[1]==m);}
+// chronological default: latest data row that is not in the future
+function chrono(r){return r[0]*12+MONTHS.indexOf(r[1]);}
+function nowChrono(){const d=new Date();return d.getFullYear()*12+d.getMonth();}
+function latestRow(src){
+  const now=nowChrono();let best=null;
+  DB[src].forEach(r=>{const c=chrono(r);if(c<=now&&(!best||c>chrono(best)))best=r;});
+  return best||DB[src][DB[src].length-1];
+}
 
 function buildControls(){
   const c=document.getElementById('ctrls');const cfg=CFG[segCur];const ys=years(cfg.src);
   const yOpts=ys.map(y=>`<option value="${y}">${y}</option>`).join('');
   const mOpts=MONTHS.map(m=>`<option value="${m}">${m[0]+m.slice(1).toLowerCase()}</option>`).join('');
-  // default latest
-  const last=DB[cfg.src][DB[cfg.src].length-1];
+  const last=latestRow(cfg.src);
+  const li=DB[cfg.src].indexOf(last);
   if(modeCur==='month'){
     c.innerHTML=`<div class="row" style="margin-top:12px">
       <div class="fld"><label>Year</label><select id="selY">${yOpts}</select></div>
@@ -297,8 +310,8 @@ function buildControls(){
     c.innerHTML=`<div class="row" style="margin-top:12px">
       <div class="fld"><label>From</label><select id="selF">${flat}</select></div>
       <div class="fld"><label>To</label><select id="selT">${flat}</select></div></div>`;
-    document.getElementById('selF').value=Math.max(0,DB[cfg.src].length-6);
-    document.getElementById('selT').value=DB[cfg.src].length-1;
+    document.getElementById('selF').value=Math.max(0,li-5);
+    document.getElementById('selT').value=li;
   }
   c.querySelectorAll('select').forEach(s=>s.addEventListener('change',renderDash));
   renderDash();
@@ -354,7 +367,9 @@ function renderDash(){
 }
 
 /* ---------- PEER ---------- */
-let peerType='Total';
+let peerType='Total', peerPeriod='single';
+const M3=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+function parseLbl(l){const p=l.split('-');return{mIdx:M3.indexOf(p[0]),year:+p[1]};}
 function buildPeer(){
   const sel=document.getElementById('peerMonth');
   sel.innerHTML=DB.peer.months.map((m,i)=>`<option value="${i}">${m}</option>`).join('');
@@ -362,14 +377,24 @@ function buildPeer(){
   sel.onchange=renderPeer;renderPeer();
 }
 function renderPeer(){
-  const mi=+document.getElementById('peerMonth').value;const col=2+mi;
+  const mi=+document.getElementById('peerMonth').value;
+  const labels=DB.peer.months;const sel=parseLbl(labels[mi]);
+  // which month columns to include
+  let cols=[];
+  if(peerPeriod==='single'){cols=[mi];}
+  else{labels.forEach((l,i)=>{const p=parseLbl(l);if(p.year===sel.year&&p.mIdx<=sel.mIdx)cols.push(i);});}
+  // aggregate per bank across selected columns
   const banks={};
-  DB.peer.rows.forEach(r=>{const[b,t]=r;banks[b]=banks[b]||{Import:0,Export:0};
-    banks[b][t]=Number(r[col])||0;});
+  DB.peer.rows.forEach(r=>{const b=r[0],t=r[1];banks[b]=banks[b]||{Import:0,Export:0};
+    cols.forEach(ci=>{banks[b][t]+=Number(r[2+ci])||0;});});
   let arr=Object.keys(banks).map(b=>({b,Import:banks[b].Import,Export:banks[b].Export,
     Total:banks[b].Import+banks[b].Export}));
   arr.sort((x,y)=>y[peerType]-x[peerType]);
   const max=Math.max(...arr.map(a=>a[peerType]),1);
+  // period span label
+  const span=peerPeriod==='single'?labels[mi]:`${labels[cols[0]]} → ${labels[mi]} (${cols.length} mo)`;
+  document.getElementById('peerSpan').textContent=`${peerType} · ${span} · USD Mn`;
+  document.getElementById('peerMonLab').textContent=peerPeriod==='single'?'Month':'Through Month';
   document.getElementById('peerOut').innerHTML=arr.map((a,i)=>{
     const me=a.b==='Prime Bank';
     return `<div class="rk ${me?'me':''}"><div class="fill" style="width:${a[peerType]/max*100}%"></div>
@@ -412,6 +437,9 @@ document.getElementById('growth').onchange=renderDash;
 document.querySelectorAll('#segPeer button').forEach(b=>b.onclick=()=>{
   document.querySelectorAll('#segPeer button').forEach(x=>x.classList.remove('on'));b.classList.add('on');
   peerType=b.dataset.pt;renderPeer();});
+document.querySelectorAll('#peerPeriod .pill').forEach(p=>p.onclick=()=>{
+  document.querySelectorAll('#peerPeriod .pill').forEach(x=>x.classList.remove('on'));p.classList.add('on');
+  peerPeriod=p.dataset.pp;renderPeer();});
 
 /* ---------- LIVE FETCH ---------- */
 function csvUrl(gid){return `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${gid}`;}
