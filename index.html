@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Trade Intel">
+<meta name="theme-color" content="#0a0e14">
+<link rel="manifest" href="manifest.json">
+<title>Trade Intelligence</title>
+<style>
+:root{
+  --bg:#0a0e14; --panel:#11161f; --panel2:#161c28; --line:#1f2733;
+  --txt:#e6edf3; --mut:#7d8896; --dim:#5a6573;
+  --accent:#4dd4c4; --accent2:#3b82f6; --gold:#e0b341;
+  --pos:#3fb950; --neg:#f85149; --prime:#4dd4c4;
+  --font:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --mono:'SF Mono','JetBrains Mono',ui-monospace,Menlo,monospace;
+}
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{font-family:var(--font);background:var(--bg);color:var(--txt);
+  min-height:100vh;padding-bottom:calc(72px + env(safe-area-inset-bottom));
+  background-image:radial-gradient(circle at 20% 0%,rgba(77,212,196,.06),transparent 40%),radial-gradient(circle at 90% 10%,rgba(59,130,246,.05),transparent 45%);
+  background-attachment:fixed;font-size:15px;line-height:1.4}
+
+/* HEADER */
+.hdr{position:sticky;top:0;z-index:90;background:rgba(10,14,20,.85);
+  backdrop-filter:blur(14px);border-bottom:1px solid var(--line);
+  padding:calc(12px + env(safe-area-inset-top)) 18px 12px;
+  display:flex;align-items:center;justify-content:space-between}
+.hdr .brand{display:flex;align-items:center;gap:10px}
+.hdr .logo{width:30px;height:30px;border-radius:8px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  display:flex;align-items:center;justify-content:center;font-weight:800;
+  font-family:'Space Grotesk';font-size:14px;color:#06231f}
+.hdr h1{font-family:'Space Grotesk';font-size:1.02rem;font-weight:700;letter-spacing:-.3px}
+.hdr .sub{font-size:.6rem;color:var(--mut);letter-spacing:.5px;text-transform:uppercase}
+.sync{display:flex;align-items:center;gap:6px;font-size:.62rem;color:var(--mut)}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--dim);flex-shrink:0;transition:.3s}
+.dot.live{background:var(--pos);box-shadow:0 0 8px var(--pos)}
+.dot.loading{background:var(--gold);animation:blink 1s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* NAV */
+.nav{position:fixed;bottom:0;left:0;right:0;z-index:100;
+  background:rgba(17,22,31,.92);backdrop-filter:blur(16px);
+  border-top:1px solid var(--line);display:flex;
+  padding-bottom:env(safe-area-inset-bottom)}
+.ntab{flex:1;padding:11px 4px 9px;border:none;background:none;color:var(--dim);
+  cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;
+  font-size:.58rem;font-weight:600;text-transform:uppercase;letter-spacing:.5px;
+  transition:color .2s;position:relative}
+.ntab svg{width:21px;height:21px;stroke-width:1.7;transition:transform .2s}
+.ntab.on{color:var(--accent)}
+.ntab.on svg{transform:translateY(-1px)}
+.ntab.on::after{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:28px;height:2px;border-radius:2px;background:var(--accent);box-shadow:0 0 8px var(--accent)}
+
+/* PAGE */
+.page{display:none;padding:16px 14px 0;animation:fade .35s ease}
+.page.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+.eyebrow{font-size:.62rem;text-transform:uppercase;letter-spacing:.8px;
+  color:var(--mut);font-weight:600;margin:18px 2px 9px;display:flex;
+  align-items:center;gap:7px}
+.eyebrow:first-child{margin-top:2px}
+.eyebrow::before{content:'';width:3px;height:11px;border-radius:2px;background:var(--accent)}
+
+/* SEGMENT TOGGLE */
+.seg{display:flex;gap:6px;background:var(--panel);border:1px solid var(--line);
+  border-radius:13px;padding:5px}
+.seg button{flex:1;border:none;background:none;color:var(--mut);padding:9px 4px;
+  border-radius:9px;font-size:.72rem;font-weight:700;cursor:pointer;
+  transition:.2s;text-transform:uppercase;letter-spacing:.3px;font-family:var(--font)}
+.seg button.on{background:linear-gradient(135deg,var(--accent2),#2563eb);color:#fff;
+  box-shadow:0 2px 12px rgba(59,130,246,.35)}
+.seg.acc button.on{background:linear-gradient(135deg,var(--accent),#2bb3a3);color:#06231f}
+
+/* PILL ROW */
+.pills{display:flex;gap:7px;flex-wrap:wrap}
+.pill{border:1px solid var(--line);background:var(--panel);color:var(--mut);
+  padding:7px 13px;border-radius:20px;font-size:.7rem;font-weight:600;cursor:pointer;transition:.2s}
+.pill.on{border-color:var(--accent);color:var(--accent);background:rgba(77,212,196,.08)}
+
+/* SELECTS */
+.row{display:flex;gap:9px}
+.fld{flex:1}
+.fld label{display:block;font-size:.6rem;text-transform:uppercase;letter-spacing:.5px;
+  color:var(--dim);margin:0 0 5px 3px;font-weight:600}
+select{width:100%;background:var(--panel);color:var(--txt);border:1px solid var(--line);
+  border-radius:10px;padding:11px 12px;font-size:.85rem;font-weight:600;font-family:var(--font);
+  appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237d8896' stroke-width='3'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 12px center;padding-right:32px}
+
+/* HERO CARD */
+.hero{margin-top:14px;background:linear-gradient(150deg,var(--panel2),var(--panel));
+  border:1px solid var(--line);border-radius:18px;padding:20px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-40%;right:-10%;width:200px;height:200px;
+  background:radial-gradient(circle,rgba(77,212,196,.12),transparent 70%)}
+.hero .lab{font-size:.64rem;text-transform:uppercase;letter-spacing:1px;color:var(--mut);font-weight:600}
+.hero .big{font-family:'Space Grotesk';font-size:2.6rem;font-weight:700;letter-spacing:-1.5px;
+  line-height:1;margin:8px 0 2px;display:flex;align-items:baseline;gap:8px}
+.hero .unit{font-size:.9rem;color:var(--mut);font-weight:500}
+.hero .meta{display:flex;gap:16px;margin-top:14px;flex-wrap:wrap}
+.hero .meta .m .v{font-family:'Space Grotesk';font-size:1.05rem;font-weight:600}
+.hero .meta .m .k{font-size:.58rem;text-transform:uppercase;letter-spacing:.5px;color:var(--dim)}
+.chg{font-size:.78rem;font-weight:700;display:inline-flex;align-items:center;gap:3px;
+  padding:3px 8px;border-radius:8px;font-family:'Space Grotesk'}
+.chg.up{color:var(--pos);background:rgba(63,185,80,.12)}
+.chg.down{color:var(--neg);background:rgba(248,81,73,.12)}
+
+/* STAT GRID */
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px}
+.stat .k{font-size:.6rem;text-transform:uppercase;letter-spacing:.5px;color:var(--dim);font-weight:600}
+.stat .v{font-family:'Space Grotesk';font-size:1.35rem;font-weight:700;margin-top:5px;letter-spacing:-.5px}
+.stat .s{font-size:.66rem;color:var(--mut);margin-top:2px}
+
+/* BREAKDOWN BARS */
+.bd{margin-top:12px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px}
+.bd .item{margin-bottom:14px}
+.bd .item:last-child{margin-bottom:0}
+.bd .top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+.bd .top .n{font-size:.78rem;font-weight:600}
+.bd .top .x{font-family:'Space Grotesk';font-size:.85rem;font-weight:700}
+.bd .top .x small{color:var(--dim);font-weight:500;font-size:.66rem}
+.bar{height:7px;border-radius:4px;background:var(--line);overflow:hidden}
+.bar i{display:block;height:100%;border-radius:4px;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  transition:width .6s cubic-bezier(.2,.8,.2,1)}
+
+/* RANK LIST (peer) */
+.rank{margin-top:12px;display:flex;flex-direction:column;gap:9px}
+.rk{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:13px 15px;position:relative;overflow:hidden}
+.rk.me{border-color:var(--accent);background:rgba(77,212,196,.06)}
+.rk .fill{position:absolute;inset:0;background:linear-gradient(90deg,rgba(59,130,246,.1),transparent);z-index:0}
+.rk.me .fill{background:linear-gradient(90deg,rgba(77,212,196,.14),transparent)}
+.rk .ct{position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between}
+.rk .l{display:flex;align-items:center;gap:11px}
+.rk .pos{font-family:'Space Grotesk';font-size:.8rem;font-weight:700;color:var(--dim);width:18px}
+.rk.me .pos{color:var(--accent)}
+.rk .nm{font-size:.84rem;font-weight:600}
+.rk .tag{font-size:.54rem;text-transform:uppercase;letter-spacing:.5px;color:#06231f;
+  background:var(--accent);padding:2px 6px;border-radius:5px;font-weight:700;margin-left:6px}
+.rk .val{font-family:'Space Grotesk';font-size:1rem;font-weight:700}
+
+/* TAT TABLE */
+.tat{margin-top:12px;background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.tatrow{padding:14px 15px;border-bottom:1px solid var(--line)}
+.tatrow:last-child{border:none}
+.tatrow .prod{font-size:.82rem;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.tatrow .prod .dg{font-size:.56rem;color:var(--pos);background:rgba(63,185,80,.12);padding:2px 7px;border-radius:6px;font-weight:700}
+.tbar{display:flex;align-items:center;gap:9px;margin-bottom:6px}
+.tbar:last-child{margin-bottom:0}
+.tbar .who{width:74px;font-size:.66rem;color:var(--mut);flex-shrink:0;font-weight:600}
+.tbar .who.p{color:var(--accent)}
+.tbar .tk{flex:1;height:18px;border-radius:5px;background:var(--line);position:relative;overflow:hidden}
+.tbar .tk i{display:block;height:100%;border-radius:5px}
+.tbar .tk .num{position:absolute;right:7px;top:50%;transform:translateY(-50%);
+  font-family:'Space Grotesk';font-size:.66rem;font-weight:700;color:var(--txt)}
+.tbar.prime .tk i{background:linear-gradient(90deg,var(--accent),#2bb3a3)}
+.tbar.digi .tk i{background:linear-gradient(90deg,var(--pos),#2ea043)}
+.tbar.peer .tk i{background:linear-gradient(90deg,#3a4452,#4a5566)}
+
+.note{font-size:.64rem;color:var(--dim);margin-top:10px;padding:0 4px;line-height:1.5}
+.spacer{height:20px}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="brand">
+    <div class="logo">T</div>
+    <div>
+      <h1>Trade Intelligence</h1>
+      <div class="sub">Prime Bank PLC</div>
+    </div>
+  </div>
+  <div class="sync"><span class="dot" id="dot"></span><span id="syncTxt">Built-in</span></div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="page on" id="p-dash">
+  <div class="seg acc" id="segDash">
+    <button class="on" data-seg="total">Total</button>
+    <button data-seg="import">Import</button>
+    <button data-seg="export">Export</button>
+    <button data-seg="bg">BG</button>
+  </div>
+
+  <div class="eyebrow">View</div>
+  <div class="pills" id="modePills">
+    <div class="pill on" data-mode="month">Month</div>
+    <div class="pill" data-mode="year">Full Year</div>
+    <div class="pill" data-mode="range">Range</div>
+  </div>
+
+  <div id="ctrls"></div>
+
+  <label style="display:flex;align-items:center;gap:9px;margin-top:14px;cursor:pointer;font-size:.74rem;color:var(--mut);font-weight:600">
+    <input type="checkbox" id="growth" style="width:18px;height:18px;accent-color:var(--accent)"> Compare vs previous period (growth)
+  </label>
+
+  <div id="dashOut"></div>
+  <div class="spacer"></div>
+</div>
+
+<!-- PEER -->
+<div class="page" id="p-peer">
+  <div class="seg" id="segPeer">
+    <button class="on" data-pt="Total">Total</button>
+    <button data-pt="Import">Import</button>
+    <button data-pt="Export">Export</button>
+  </div>
+  <div class="eyebrow">Month</div>
+  <div class="row">
+    <div class="fld"><select id="peerMonth"></select></div>
+  </div>
+  <div class="eyebrow">League Table <span style="color:var(--dim);font-weight:500;text-transform:none;letter-spacing:0">USD Mn</span></div>
+  <div class="rank" id="peerOut"></div>
+  <div class="note">BG not included — peer BG data unavailable. Total = Import + Export.</div>
+  <div class="spacer"></div>
+</div>
+
+<!-- TAT -->
+<div class="page" id="p-tat">
+  <div class="eyebrow">Turnaround Time <span style="color:var(--dim);font-weight:500;text-transform:none;letter-spacing:0">minutes · lower is better</span></div>
+  <div class="tat" id="tatOut"></div>
+  <div class="note">PrimeBanijjo (digital) shown where available. Peer TATs are benchmark estimates.</div>
+  <div class="spacer"></div>
+</div>
+
+<div class="nav" id="nav">
+  <button class="ntab on" data-pg="dash">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+    Dashboard
+  </button>
+  <button class="ntab" data-pg="peer">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>
+    Peer Bank
+  </button>
+  <button class="ntab" data-pg="tat">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+    TAT
+  </button>
+</div>
+
+<script>
+const SHEET_ID='17UPu-0GurBgKbPzDUWOifdCpiSNO3HWmfbNE1abx_ws';
+// Live CSV GIDs — fill PEER/TAT once published. Import/Export/BG known.
+const GID={import:'1153975890',export:'142517649',bg:'659700032',peer:'',tat:''};
+
+let DB={"import":[[2024,"JANUARY",23,1976,65.93,658,80.36,684,13.28,686,6.09,4004,165.66],[2024,"FEBRUARY",21,1473,45.15,518,65.72,452,11.18,508,6.52,2951,128.57],[2024,"MARCH",19,1947,70.85,688,89.91,645,16,636,5.58,3916,182.34],[2024,"APRIL",20,1479,50.24,688,98.27,553,15.51,631,3.94,3351,167.96],[2024,"MAY",20,1854,54.18,717,106.99,698,16.83,627,7.08,3896,185.08],[2024,"JUNE",17,1404,50.13,608,71.74,469,8.35,508,4.28,2989,134.5],[2024,"JULY",21,1602,60.6,528,82.92,514,15.56,511,3.23,3155,162.31],[2024,"AUGUST",19,1807,58.24,536,96.38,626,18.03,577,3.62,3546,176.27],[2024,"SEPTEMBER",21,1853,67.65,613,118.85,689,17,806,7.12,3961,210.62],[2024,"OCTOBER",22,1851,59,743,99.8,776,15.63,651,7.17,4021,181.6],[2024,"NOVEMBER",20,1874,62.19,651,99.65,653,12.44,530,4.55,3708,178.83],[2024,"DECEMBER",20,1875,75.98,866,131.22,696,15.9,672,51.87,4109,274.97],[2025,"JANUARY",22,2042,62.11,759,121.85,664,14.29,700,11.4,4165,209.65],[2025,"FEBRUARY",20,1700,51.17,784,153.44,527,13.27,512,4.15,3523,222.03],[2025,"MARCH",19,1999,65.97,790,142.37,696,20.14,653,10.05,4138,238.53],[2025,"APRIL",19,1464,49.87,732,113.87,615,13,653,7.69,3464,184.43],[2025,"MAY",19,1965,61.47,750,134.03,633,14,780,9.53,4128,219.03],[2025,"JUNE",18,1347,49.01,581,88.22,480,9.75,557,28.06,2965,175.04],[2025,"JULY",20,2224,69,795,113,621,12,959,29.71,4599,223.71],[2025,"AUGUST",21,1826,52.91,619,99.78,624,13.75,921,52.07,3990,218.51],[2025,"SEPTEMBER",22,1904,59,710,135,778,19.13,1044,17.73,4436,230.86],[2025,"OCTOBER",20,1688,56,766,136,662,11.73,926,50.24,4042,253.97],[2025,"NOVEMBER",21,1770,43.24,903,216,694,14.2,797,15.44,4164,288.88],[2025,"DECEMBER",20,1737,56.45,781,103.5,672,12.6,436,43.67,3626,216.22],[2026,"JANUARY",21,2125,77.17,848,140.3,626,16.84,1007,12.76,4606,247.07],[2026,"FEBRUARY",19,1667,60,721,139.65,530,13,667,10.24,3585,222.89],[2026,"MARCH",18,1816,53,813,154,638,36,861,17,4128,260],[2026,"APRIL",21,2158,74,869,144,784,66,1185,70.4,4996,354.4],[2026,"MAY",19,1819,58,831,182,615,15,919,151,4184,406]],"export":[[2024,"JANUARY",23,2079,121.48,1241,44.37,3320,165.85],[2024,"FEBRUARY",21,1863,104.32,1016,36.3,2879,140.62],[2024,"MARCH",19,1988,120.71,1172,43.17,3160,163.88],[2024,"APRIL",20,1706,100.01,923,36.38,2629,136.39],[2024,"MAY",20,2083,126,1274,48,3357,174],[2024,"JUNE",17,1805,121,1009,42.14,2814,163.14],[2024,"JULY",21,1675,116,1074,38,2749,154],[2024,"AUGUST",19,1703,101.4,1237,47,2940,148.4],[2024,"SEPTEMBER",21,2296,139.51,1498,51.81,3794,191.32],[2024,"OCTOBER",22,2269,123.59,1355,50.28,3624,173.87],[2024,"NOVEMBER",20,2035,130,1298,49.46,3333,179.46],[2024,"DECEMBER",20,2164,126.83,1306,49,3470,175.83],[2025,"JANUARY",22,2034,128.59,1484,54.8,3518,183.39],[2025,"FEBRUARY",20,2106,126.58,1131,43.87,3237,170.45],[2025,"MARCH",19,2106,150.27,1287,45.81,3393,196.08],[2025,"APRIL",19,1962,126.55,904,33.94,2866,160.49],[2025,"MAY",19,1961,126.9,1381,47.79,3342,174.69],[2025,"JUNE",18,1840,120,992,36.78,2832,156.78],[2025,"JULY",20,1951,126.85,1193,47.61,3144,174.46],[2025,"AUGUST",21,2213,139.36,1075,40.01,3288,179.37],[2025,"SEPTEMBER",22,2223,129.6,1148,38.76,3371,168.36],[2025,"OCTOBER",20,1893,117.5,1179,48.37,3072,165.87],[2025,"NOVEMBER",21,1951,134.06,1134,42,3085,176.06],[2025,"DECEMBER",20,2139,132.37,1255,42.55,3394,174.92],[2026,"JANUARY",21,1996,125.13,1160,41,3156,166.13],[2026,"FEBRUARY",19,1748,109.71,1132,39.11,2880,148.82],[2026,"MARCH",18,1661,106,1219,49,2880,155],[2026,"APRIL",21,1987,120,1366,53,3353,173],[2026,"MAY",19,1758,132,1168,42,2926,174]],"bg":[[2024,"JANUARY",23,105,3.56],[2024,"FEBRUARY",21,78,4.48],[2024,"MARCH",19,83,15.2],[2024,"APRIL",20,104,4.69],[2024,"MAY",20,98,4.4],[2024,"JUNE",17,99,25.22],[2024,"JULY",21,94,5.54],[2024,"AUGUST",19,66,9.4],[2024,"SEPTEMBER",21,66,6.72],[2024,"OCTOBER",22,80,7.17],[2024,"NOVEMBER",20,86,45.22],[2024,"DECEMBER",20,115,26.15],[2025,"JANUARY",22,112,9.81],[2025,"FEBRUARY",20,132,8.6],[2025,"MARCH",19,102,8.43],[2025,"APRIL",19,83,21.29],[2025,"MAY",19,113,5.31],[2025,"JUNE",18,144,63.22],[2025,"JULY",20,120,22.42],[2025,"AUGUST",21,120,11],[2025,"SEPTEMBER",22,103,40.79],[2025,"OCTOBER",20,57,2.64],[2025,"NOVEMBER",21,69,124],[2025,"DECEMBER",20,66,6.67],[2026,"JANUARY",21,99,4.45],[2026,"FEBRUARY",19,136,12.63],[2026,"MARCH",18,110,53],[2026,"APRIL",21,163,103],[2026,"MAY",19,159,32]],"total":[[2024,"JANUARY",23,4004,165.66,3320,165.85,105,3.56,7429,335.07],[2024,"FEBRUARY",21,2951,128.57,2879,140.62,78,4.48,5908,273.67],[2024,"MARCH",19,3916,182.34,3160,163.88,83,15.2,7159,361.42],[2024,"APRIL",20,3351,167.96,2629,136.39,104,4.69,6084,309.04],[2024,"MAY",20,3896,185.08,3357,174,98,4.4,7351,363.48],[2024,"JUNE",17,2989,134.5,2814,163.14,99,25.22,5902,322.86],[2024,"JULY",21,3155,162.31,2749,154,94,5.54,5998,321.85],[2024,"AUGUST",19,3546,176.27,2940,148.4,66,9.4,6552,334.07],[2024,"SEPTEMBER",21,3961,210.62,3794,191.32,66,6.72,7821,408.66],[2024,"OCTOBER",22,4021,181.6,3624,173.87,80,7.17,7725,362.64],[2024,"NOVEMBER",20,3708,178.83,3333,179.46,86,45.22,7127,403.51],[2024,"DECEMBER",20,4109,274.97,3470,175.83,115,26.15,7694,476.95],[2025,"JANUARY",22,4165,209.65,3518,183.39,112,9.81,7795,402.85],[2025,"FEBRUARY",20,3523,222.03,3237,170.45,132,8.6,6892,401.08],[2025,"MARCH",19,4138,238.53,3393,196.08,102,8.43,7633,443.04],[2025,"APRIL",19,3464,184.43,2866,160.49,83,21.29,6413,366.21],[2025,"MAY",19,4128,219.03,3342,174.69,113,5.31,7583,399.03],[2025,"JUNE",18,2965,175.04,2832,156.78,144,63.22,5941,395.04],[2025,"JULY",20,4599,223.71,3144,174.46,120,22.42,7863,420.59],[2025,"AUGUST",21,3990,218.51,3288,179.37,120,11,7398,408.88],[2025,"SEPTEMBER",22,4436,230.86,3371,168.36,103,40.79,7910,440.01],[2025,"OCTOBER",20,4042,253.97,3072,165.87,57,2.64,7171,422.48],[2025,"NOVEMBER",21,4164,288.88,3085,176.06,69,124,7318,588.94],[2025,"DECEMBER",20,3626,216.22,3394,174.92,66,6.67,7086,397.81],[2026,"JANUARY",21,4606,247.07,3156,166.13,99,4.45,7861,417.65],[2026,"FEBRUARY",19,3585,222.89,2880,148.82,136,12.63,6601,384.34],[2026,"MARCH",18,4128,260,2880,155,110,53,7118,468],[2026,"APRIL",21,4996,354.4,3353,173,163,103,8512,630.4],[2026,"MAY",19,4184,406,2926,174,159,32,7269,612]],"peer":{"months":["JAN-26","FEB-26","MAR-26","APR-26"],"rows":[["Prime Bank","Import",247,223,260,354],["Prime Bank","Export",166,149,155,173],["The Premier Bank","Import",235.35,166.57,180.15,245.6],["The Premier Bank","Export",181.06,144.61,166.43,158.7],["Dhaka Bank","Import",200.15,152.26,166.02,293.44],["Dhaka Bank","Export",169.07,134.9,153.19,164.05],["EBL","Import",465,242,308,415],["EBL","Export",282,270,260,274],["The City","Import",485.56,375.62,386.15,528.7],["The City","Export",310.26,269.68,315.93,318.97],["UCB","Import",326.7,212.19,281,291.26],["UCB","Export",270.68,229.36,235.74,255.55],["Shahjalal Islami","Import",393,271,339,414],["Shahjalal Islami","Export",260,239,260,305]]},"tat":{"cols":["Product","Prime Conventional","Prime Digital","SCB","The City","BRAC","EBL","UCB","Shahjalal","Dhaka"],"rows":[["LC Issuance (BTB)",34,5,40,35,30,40,48,58,44],["LC Issuance (Cash)",65,10,70,65,60,76,91,112,83],["TT/CAD",30,null,35,30,30,35,42,52,38],["Shipping Guarantee",30,10,30,30,30,35,42,52,38],["Export Bill Processing",20,null,35,25,30,23,28,34,26],["Trade Loans",15,null,25,15,20,18,21,26,19]]},"employee":[["The City",190],["Prime Bank",121],["EBL",197],["Dhaka Bank",140],["UCB",221],["Shahjalal Islami",300]]};
+
+const MONTHS=['JANUARY','FEBRUARY','MARCH','APRIL','MAY','JUNE','JULY','AUGUST','SEPTEMBER','OCTOBER','NOVEMBER','DECEMBER'];
+const fmt=(n,d=1)=>n==null||n===''?'-':Number(n).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
+const fmt0=n=>n==null||n===''?'-':Math.round(Number(n)).toLocaleString('en-US');
+
+/* ---------- DASHBOARD ----------
+   column index map per segment (0-based): v=value col, t=txn col,
+   bd = breakdown [label, txnCol, valCol] */
+const CFG={
+  total:{src:'total',v:10,t:9,bd:[['Import',3,4],['Export',5,6],['Bank Guarantee',7,8]],tl:'Transactions'},
+  import:{src:'import',v:12,t:11,bd:[['BTB LC',3,4],['Cash LC',5,6],['Amendment',7,8],['TT-CAD',9,10]],tl:'Transactions'},
+  export:{src:'export',v:8,t:7,bd:[['Foreign Bills',3,4],['Local Bills',5,6]],tl:'Bills'},
+  bg:{src:'bg',v:4,t:3,bd:[],tl:'Guarantees'}
+};
+let segCur='total', modeCur='month';
+
+function years(src){return [...new Set(DB[src].map(r=>r[0]))].sort();}
+function rowsByYear(src,y){return DB[src].filter(r=>r[0]==y);}
+function findRow(src,y,m){return DB[src].find(r=>r[0]==y&&r[1]==m);}
+
+function buildControls(){
+  const c=document.getElementById('ctrls');const cfg=CFG[segCur];const ys=years(cfg.src);
+  const yOpts=ys.map(y=>`<option value="${y}">${y}</option>`).join('');
+  const mOpts=MONTHS.map(m=>`<option value="${m}">${m[0]+m.slice(1).toLowerCase()}</option>`).join('');
+  // default latest
+  const last=DB[cfg.src][DB[cfg.src].length-1];
+  if(modeCur==='month'){
+    c.innerHTML=`<div class="row" style="margin-top:12px">
+      <div class="fld"><label>Year</label><select id="selY">${yOpts}</select></div>
+      <div class="fld"><label>Month</label><select id="selM">${mOpts}</select></div></div>`;
+    document.getElementById('selY').value=last[0];
+    document.getElementById('selM').value=last[1];
+  }else if(modeCur==='year'){
+    c.innerHTML=`<div class="row" style="margin-top:12px">
+      <div class="fld"><label>Year</label><select id="selY">${yOpts}</select></div></div>`;
+    document.getElementById('selY').value=last[0];
+  }else{
+    const flat=DB[cfg.src].map((r,i)=>`<option value="${i}">${r[1][0]+r[1].slice(1,3).toLowerCase()} ${r[0]}</option>`).join('');
+    c.innerHTML=`<div class="row" style="margin-top:12px">
+      <div class="fld"><label>From</label><select id="selF">${flat}</select></div>
+      <div class="fld"><label>To</label><select id="selT">${flat}</select></div></div>`;
+    document.getElementById('selF').value=Math.max(0,DB[cfg.src].length-6);
+    document.getElementById('selT').value=DB[cfg.src].length-1;
+  }
+  c.querySelectorAll('select').forEach(s=>s.addEventListener('change',renderDash));
+  renderDash();
+}
+
+function sumRows(rows,cfg){
+  let v=0,t=0,bd=cfg.bd.map(b=>[b[0],0,0]);
+  rows.forEach(r=>{v+=Number(r[cfg.v])||0;t+=Number(r[cfg.t])||0;
+    cfg.bd.forEach((b,i)=>{bd[i][1]+=Number(r[b[1]])||0;bd[i][2]+=Number(r[b[2]])||0;});});
+  return {v,t,bd};
+}
+
+function renderDash(){
+  const cfg=CFG[segCur];const out=document.getElementById('dashOut');
+  const grow=document.getElementById('growth').checked;
+  let cur,prev,label,sub;
+  if(modeCur==='month'){
+    const y=+document.getElementById('selY').value,m=document.getElementById('selM').value;
+    const row=findRow(cfg.src,y,m);
+    if(!row){out.innerHTML=`<div class="bd" style="margin-top:14px;color:var(--mut);text-align:center">No data for ${m} ${y}</div>`;return;}
+    cur=sumRows([row],cfg);label=`${m[0]+m.slice(1).toLowerCase()} ${y}`;
+    const idx=DB[cfg.src].indexOf(row);if(grow&&idx>0)prev=sumRows([DB[cfg.src][idx-1]],cfg);
+    sub='single month';
+  }else if(modeCur==='year'){
+    const y=+document.getElementById('selY').value;
+    cur=sumRows(rowsByYear(cfg.src,y),cfg);label=`${y} · Full Year`;
+    if(grow)prev=sumRows(rowsByYear(cfg.src,y-1),cfg);
+    sub=rowsByYear(cfg.src,y).length+' months';
+  }else{
+    let a=+document.getElementById('selF').value,b=+document.getElementById('selT').value;
+    if(a>b)[a,b]=[b,a];const rows=DB[cfg.src].slice(a,b+1);
+    cur=sumRows(rows,cfg);
+    label='Range';sub=`${DB[cfg.src][a][1][0]+DB[cfg.src][a][1].slice(1,3).toLowerCase()} ${DB[cfg.src][a][0]} → ${DB[cfg.src][b][1][0]+DB[cfg.src][b][1].slice(1,3).toLowerCase()} ${DB[cfg.src][b][0]}`;
+    if(grow){const len=b-a+1,pa=Math.max(0,a-len);prev=sumRows(DB[cfg.src].slice(pa,a),cfg);}
+  }
+  let chg='';
+  if(prev&&prev.v>0){const p=((cur.v-prev.v)/prev.v*100);
+    chg=`<span class="chg ${p>=0?'up':'down'}">${p>=0?'▲':'▼'} ${Math.abs(p).toFixed(1)}%</span>`;}
+  const bdMax=Math.max(...cur.bd.map(b=>b[2]),1);
+  let bdHtml='';
+  if(cur.bd.length){bdHtml=`<div class="eyebrow">Breakdown</div><div class="bd">`+
+    cur.bd.map(b=>`<div class="item"><div class="top"><span class="n">${b[0]}</span>
+      <span class="x">${fmt(b[2])}<small> Mn · ${fmt0(b[1])} txn</small></span></div>
+      <div class="bar"><i style="width:${b[2]/bdMax*100}%"></i></div></div>`).join('')+`</div>`;}
+  out.innerHTML=`
+    <div class="hero"><div class="lab">${label} · ${cfg.tl} & Value</div>
+      <div class="big">${fmt(cur.v)} <span class="unit">USD Mn ${chg}</span></div>
+      <div class="meta">
+        <div class="m"><div class="v">${fmt0(cur.t)}</div><div class="k">${cfg.tl}</div></div>
+        <div class="m"><div class="v">${cur.t>0?fmt(cur.v/cur.t*1000):'-'}</div><div class="k">Avg '000/txn</div></div>
+        <div class="m"><div class="v">${sub}</div><div class="k">Period</div></div>
+      </div></div>${bdHtml}`;
+}
+
+/* ---------- PEER ---------- */
+let peerType='Total';
+function buildPeer(){
+  const sel=document.getElementById('peerMonth');
+  sel.innerHTML=DB.peer.months.map((m,i)=>`<option value="${i}">${m}</option>`).join('');
+  sel.value=DB.peer.months.length-1;
+  sel.onchange=renderPeer;renderPeer();
+}
+function renderPeer(){
+  const mi=+document.getElementById('peerMonth').value;const col=2+mi;
+  const banks={};
+  DB.peer.rows.forEach(r=>{const[b,t]=r;banks[b]=banks[b]||{Import:0,Export:0};
+    banks[b][t]=Number(r[col])||0;});
+  let arr=Object.keys(banks).map(b=>({b,Import:banks[b].Import,Export:banks[b].Export,
+    Total:banks[b].Import+banks[b].Export}));
+  arr.sort((x,y)=>y[peerType]-x[peerType]);
+  const max=Math.max(...arr.map(a=>a[peerType]),1);
+  document.getElementById('peerOut').innerHTML=arr.map((a,i)=>{
+    const me=a.b==='Prime Bank';
+    return `<div class="rk ${me?'me':''}"><div class="fill" style="width:${a[peerType]/max*100}%"></div>
+      <div class="ct"><div class="l"><span class="pos">${i+1}</span>
+      <span class="nm">${a.b}${me?'<span class="tag">US</span>':''}</span></div>
+      <span class="val">${fmt(a[peerType])}</span></div></div>`;}).join('');
+}
+
+/* ---------- TAT ---------- */
+function renderTat(){
+  const all=[];DB.tat.rows.forEach(r=>r.slice(1).forEach(v=>{if(v)all.push(Number(v));}));
+  const gmax=Math.max(...all,1);
+  const peers=DB.tat.cols.slice(3);
+  document.getElementById('tatOut').innerHTML=DB.tat.rows.map(r=>{
+    const conv=Number(r[1])||0,digi=r[2]?Number(r[2]):null;
+    let bars=`<div class="tbar prime"><span class="who p">Prime</span>
+      <div class="tk"><i style="width:${conv/gmax*100}%"></i><span class="num">${conv}</span></div></div>`;
+    if(digi)bars+=`<div class="tbar digi"><span class="who p">PrimeBanijjo</span>
+      <div class="tk"><i style="width:${digi/gmax*100}%"></i><span class="num">${digi}</span></div></div>`;
+    peers.forEach((p,i)=>{const v=Number(r[3+i])||0;
+      bars+=`<div class="tbar peer"><span class="who">${p}</span>
+      <div class="tk"><i style="width:${v/gmax*100}%"></i><span class="num">${v}</span></div></div>`;});
+    return `<div class="tatrow"><div class="prod">${r[0]}${digi?'<span class="dg">DIGITAL '+Math.round((1-digi/conv)*100)+'% faster</span>':''}</div>${bars}</div>`;
+  }).join('');
+}
+
+/* ---------- NAV ---------- */
+document.querySelectorAll('.ntab').forEach(t=>t.onclick=()=>{
+  document.querySelectorAll('.ntab').forEach(x=>x.classList.remove('on'));t.classList.add('on');
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  document.getElementById('p-'+t.dataset.pg).classList.add('on');
+});
+document.querySelectorAll('#segDash button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('#segDash button').forEach(x=>x.classList.remove('on'));b.classList.add('on');
+  segCur=b.dataset.seg;buildControls();});
+document.querySelectorAll('#modePills .pill').forEach(p=>p.onclick=()=>{
+  document.querySelectorAll('#modePills .pill').forEach(x=>x.classList.remove('on'));p.classList.add('on');
+  modeCur=p.dataset.mode;buildControls();});
+document.getElementById('growth').onchange=renderDash;
+document.querySelectorAll('#segPeer button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('#segPeer button').forEach(x=>x.classList.remove('on'));b.classList.add('on');
+  peerType=b.dataset.pt;renderPeer();});
+
+/* ---------- LIVE FETCH ---------- */
+function csvUrl(gid){return `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${gid}`;}
+function parseCSV(t){return t.trim().split('\n').map(l=>{const o=[];let c='',q=false;
+  for(const ch of l){if(ch=='"')q=!q;else if(ch==','&&!q){o.push(c);c='';}else c+=ch;}o.push(c);
+  return o.map(x=>x.trim());});}
+function num(x){const n=parseFloat(String(x).replace(/,/g,''));return isNaN(n)?x:n;}
+
+async function goLive(){
+  const dot=document.getElementById('dot'),txt=document.getElementById('syncTxt');
+  dot.className='dot loading';txt.textContent='Syncing…';
+  try{
+    const jobs=[['import',13],['export',9],['bg',5],['total',11]];
+    for(const[key,nc]of jobs){if(!GID[key])continue;
+      const r=await fetch(csvUrl(GID[key]));const rows=parseCSV(await r.text());
+      const data=rows.slice(2).filter(x=>/^\d{4}$/.test(x[0]))
+        .map(x=>x.slice(0,nc).map((v,i)=>i==1?v.toUpperCase():num(v)));
+      if(data.length)DB[key]=data;}
+    if(GID.peer){const r=await fetch(csvUrl(GID.peer));const rows=parseCSV(await r.text());
+      const months=rows[1].slice(2).filter(Boolean);
+      const body=rows.slice(2).filter(x=>x[0]).map(x=>[x[0],x[1],...x.slice(2,2+months.length).map(num)]);
+      if(body.length)DB.peer={months,rows:body};}
+    if(GID.tat){const r=await fetch(csvUrl(GID.tat));const rows=parseCSV(await r.text());
+      const cols=rows[1];const body=rows.slice(2).filter(x=>x[0]).map(x=>[x[0],...x.slice(1,10).map(num)]);
+      if(body.length)DB.tat={cols,rows:body};}
+    dot.className='dot live';txt.textContent='Live';
+    buildControls();buildPeer();renderTat();
+  }catch(e){dot.className='dot';txt.textContent='Built-in';}
+}
+
+/* ---------- BOOT ---------- */
+buildControls();buildPeer();renderTat();
+goLive();
+if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+</script>
+</body>
+</html>
