@@ -119,6 +119,14 @@ select{width:100%;background:var(--panel);color:var(--txt);border:1px solid var(
   background:radial-gradient(circle,rgba(255,255,255,.1),transparent 70%)}
 .hero .lab{font-size:.7rem;text-transform:uppercase;letter-spacing:1px;
   color:rgba(255,255,255,.9);font-weight:700;position:relative}
+.hero-top{display:flex;justify-content:space-between;align-items:flex-start;
+  gap:10px;position:relative}
+.hcall{flex-shrink:0;display:inline-flex;align-items:center;gap:6px;text-decoration:none;
+  background:rgba(255,255,255,.2);color:#fff;padding:7px 12px;border-radius:20px;
+  font-family:'Space Grotesk';font-weight:700;font-size:.74rem;white-space:nowrap;
+  backdrop-filter:blur(4px);transition:transform .15s,background .15s}
+.hcall:active{transform:scale(.95);background:rgba(255,255,255,.32)}
+.hcall svg{width:14px;height:14px;stroke:#fff;stroke-width:2.2;fill:none}
 .hero .big{font-family:'Space Grotesk';font-size:2.7rem;font-weight:700;letter-spacing:-1.5px;
   line-height:1;margin:9px 0 2px;display:flex;align-items:baseline;gap:9px;
   flex-wrap:wrap;position:relative}
@@ -205,6 +213,15 @@ select{width:100%;background:var(--panel);color:var(--txt);border:1px solid var(
 .tbar.peer .tk i{background:linear-gradient(90deg,#cbd5e8,#aab6cf)}
 
 .note{font-size:.72rem;color:var(--mut);margin-top:11px;padding:0 4px;line-height:1.55;font-weight:500}
+.helpcard{display:flex;align-items:center;gap:14px;margin:26px 2px 10px;text-decoration:none;
+  background:linear-gradient(135deg,#0ea5b7,#6366f1);border-radius:17px;padding:16px 18px;
+  box-shadow:0 10px 26px rgba(79,70,229,.26);transition:transform .15s,box-shadow .15s}
+.helpcard:active{transform:scale(.98);box-shadow:0 6px 16px rgba(79,70,229,.3)}
+.helpcard .ic{width:44px;height:44px;border-radius:13px;background:rgba(255,255,255,.22);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.helpcard .ic svg{width:23px;height:23px;stroke:#fff;stroke-width:2;fill:none}
+.helpcard .l1{font-size:.72rem;color:rgba(255,255,255,.88);font-weight:600;letter-spacing:.2px}
+.helpcard .l2{font-family:'Space Grotesk';font-size:1.12rem;font-weight:700;color:#fff;margin-top:2px;letter-spacing:.2px}
 .credit{margin:28px 4px 8px;padding-top:20px;border-top:1px solid var(--line);text-align:center}
 .credit .cap{font-size:.64rem;text-transform:uppercase;letter-spacing:.8px;color:var(--mut);font-weight:700}
 .credit .nm{font-family:'Space Grotesk';font-size:1rem;font-weight:700;margin-top:6px;
@@ -282,11 +299,7 @@ select{width:100%;background:var(--panel);color:var(--txt);border:1px solid var(
   <div class="spacer"></div>
 </div>
 
-<div class="credit">
-  <div class="cap">Designed, Developed &amp; Maintained by</div>
-  <div class="nm">Md Tanveer Bin Hasan</div>
-  <div class="role">Head, Trade Digitalization &amp; Innovation</div>
-</div>
+<a class="helpcard" href="tel:+8801914554709" style="display:none"></a>
 
 <div class="nav" id="nav">
   <button class="ntab on" data-pg="dash">
@@ -431,7 +444,8 @@ function renderDash(){
       <span class="x">${fmt(b[2])}<small> Mn · ${fmt0(b[1])} txn</small></span></div>
       <div class="bar"><i style="width:${b[2]/bdMax*100}%"></i></div></div>`).join('')+`</div>`;}
   out.innerHTML=`
-    <div class="hero"><div class="lab">${label} · ${cfg.tl} & Value</div>
+    <div class="hero"><div class="hero-top"><div class="lab">${label} · ${cfg.tl} & Value</div>
+      <a class="hcall" href="tel:+8801914554709"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Call Tanveer for Help</a></div>
       <div class="big">${fmt(cur.v)} <span class="unit">USD Mn ${badge}</span></div>
       ${yoyLine}
       <div class="meta">
